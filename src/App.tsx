@@ -47,6 +47,8 @@ function App() {
   const [formStatus, setFormStatus] = useState('')
   const [activeSkill, setActiveSkill] = useState(skillGroups[1].title)
   const [activeProject, setActiveProject] = useState(0)
+  const [environmentReady, setEnvironmentReady] = useState(false)
+  const [environmentVisible, setEnvironmentVisible] = useState(true)
 
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -104,6 +106,13 @@ function App() {
     )
     document.querySelectorAll('main section[id]').forEach((section) => observer.observe(section))
 
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => setEnvironmentVisible(entry.isIntersecting),
+      { rootMargin: '100px', threshold: 0 },
+    )
+    const hero = document.querySelector('#home')
+    if (hero) heroObserver.observe(hero)
+
     const revealObserver = new IntersectionObserver(
       (entries) => entries.forEach((entry) => {
         if (entry.isIntersecting) entry.target.classList.add('is-visible')
@@ -125,6 +134,7 @@ function App() {
     return () => {
       observer.disconnect()
       revealObserver.disconnect()
+      heroObserver.disconnect()
       window.removeEventListener('pointermove', onPointerMove)
       magneticListeners.forEach((remove) => remove())
       cancelAnimationFrame(frameId)
@@ -208,9 +218,10 @@ function App() {
 
       <main>
         <section className="hero-section" id="home">
-          <div className="hero-environment" aria-hidden="true">
+          <div className={environmentReady ? 'hero-environment is-ready' : 'hero-environment'} aria-hidden="true">
+            <div className="environment-fallback" />
             <Suspense fallback={null}>
-              <ChromeSculpture />
+              <ChromeSculpture onReady={() => setEnvironmentReady(true)} visible={environmentVisible} />
             </Suspense>
           </div>
           <div className="hero-grid container">

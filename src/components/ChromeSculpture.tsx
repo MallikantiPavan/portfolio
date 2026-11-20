@@ -4,8 +4,8 @@ import { Suspense, useEffect, useMemo, useRef } from 'react'
 import type { Group } from 'three'
 import { ACESFilmicToneMapping, CatmullRomCurve3, IcosahedronGeometry, TubeGeometry, Vector3 } from 'three'
 
-function createOrganicShell() {
-  const geometry = new IcosahedronGeometry(2.05, 6)
+function createOrganicShell(detail = 5) {
+  const geometry = new IcosahedronGeometry(2.05, detail)
   const positions = geometry.attributes.position
 
   for (let index = 0; index < positions.count; index += 1) {
@@ -33,10 +33,11 @@ function createRibbon(points: Vector3[], radius: number) {
   return new TubeGeometry(curve, 180, radius, 12, true)
 }
 
-function Sculpture() {
+function Sculpture({ onReady }: { onReady: () => void }) {
   const world = useRef<Group>(null)
   const foreground = useRef<Group>(null)
-  const shell = useMemo(() => createOrganicShell(), [])
+  const readyFrames = useRef(0)
+  const shell = useMemo(() => createOrganicShell(window.matchMedia('(max-width: 760px)').matches ? 4 : 5), [])
   const limeRibbon = useMemo(
     () => createRibbon([
       new Vector3(-1.45, -0.75, 1.25),
@@ -65,6 +66,10 @@ function Sculpture() {
   }, [shell, limeRibbon, blueRibbon])
 
   useFrame((state, delta) => {
+    if (readyFrames.current < 3) {
+      readyFrames.current += 1
+      if (readyFrames.current === 3) onReady()
+    }
     if (!world.current || !foreground.current) return
     const mobile = state.size.width < 760
     const tablet = state.size.width >= 760 && state.size.width < 980
@@ -126,10 +131,11 @@ function Sculpture() {
   )
 }
 
-export default function ChromeSculpture() {
+export default function ChromeSculpture({ onReady, visible }: { onReady: () => void; visible: boolean }) {
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      dpr={[1, 1.25]}
+      frameloop={visible ? 'always' : 'never'}
       camera={{ position: [0, 0, 8.8], fov: 34 }}
       gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', stencil: false, depth: true }}
       onCreated={({ gl }) => {
@@ -144,7 +150,7 @@ export default function ChromeSculpture() {
       <pointLight position={[-4, -2, 3]} intensity={18} color="#1558c9" distance={8} />
       <pointLight position={[4, 2, 2]} intensity={12} color="#d4ff24" distance={7} />
       <Suspense fallback={null}>
-        <Sculpture />
+        <Sculpture onReady={onReady} />
         <Environment preset="city" />
       </Suspense>
     </Canvas>
