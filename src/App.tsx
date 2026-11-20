@@ -135,6 +135,29 @@ function App() {
 
   const closeMenu = () => setMenuOpen(false)
 
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const handleOutsidePointer = (event: PointerEvent) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+      if (target.closest('.navbar')) return
+      setMenuOpen(false)
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handleOutsidePointer)
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsidePointer)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [menuOpen])
+
   const handleSectionNavigation = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault()
     closeMenu()
@@ -371,7 +394,15 @@ function App() {
                       <div className="story-tech">
                         {project.tech.map((tech) => <span key={tech}>{tech}</span>)}
                       </div>
-                      <span className="project-status"><i />Project showcase</span>
+                      <a
+                        className="project-status project-link"
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View ${project.title} source code on GitHub`}
+                      >
+                        <i />View on GitHub <ArrowUpRight size={14} />
+                      </a>
                     </div>
                   </div>
                 </motion.article>

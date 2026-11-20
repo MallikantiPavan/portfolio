@@ -55,6 +55,7 @@ export const projects = [
     description: 'A working end-to-end medical imaging system for thoracic pathology classification, explainability, and clinical-style report export.',
     tech: ['PyTorch', 'DenseNet121', 'ECA', 'FastAPI', 'Grad-CAM'],
     features: ['5-pathology shared backbone', 'PCA/KNN missing-view imputation', 'CheXpert pseudo-labeling', 'PDF export and upload history'],
+    githubUrl: 'https://github.com/MallikantiPavan/ChestAI',
   },
   {
     number: '02',
@@ -64,6 +65,7 @@ export const projects = [
     description: 'A retrieval-augmented assistant that grounds answers in research PDFs and compares source content with recent information.',
     tech: ['LangChain', 'ChromaDB', 'Gemini', 'Tavily'],
     features: ['Overlapping PDF chunking', 'Hugging Face embeddings', 'Context-grounded Gemini answers', 'Agentic web search'],
+    githubUrl: 'https://github.com/MallikantiPavan/Docuchat_agent',
   },
   {
     number: '03',
@@ -73,6 +75,7 @@ export const projects = [
     description: 'A conversational interview assistant for practicing Python, English, HTML, CSS, and Generative AI with automated feedback.',
     tech: ['LangChain', 'Gemini', 'Flask'],
     features: ['Voice-based responses', 'Topic-driven interviews', 'Automated scoring', 'Improvement suggestions'],
+    githubUrl: 'https://github.com/MallikantiPavan/Interview_Assistent',
   },
 ]
 
