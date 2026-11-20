@@ -195,7 +195,8 @@ function App() {
 
   const navItems = [
     ['home', 'Home'], ['about', 'About'], ['skills', 'Skills'],
-    ['experience', 'Experience'], ['projects', 'Projects'], ['contact', 'Contact'],
+    ['experience', 'Experience'], ['projects', 'Projects'],
+    ['education', 'Academic Background'], ['contact', 'Contact'],
   ]
 
   return (
