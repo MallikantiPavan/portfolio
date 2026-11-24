@@ -47,6 +47,7 @@ function App() {
   const [formStatus, setFormStatus] = useState('')
   const [activeSkill, setActiveSkill] = useState(skillGroups[1].title)
   const [activeProject, setActiveProject] = useState(0)
+  const [activeProjectCategory, setActiveProjectCategory] = useState('All')
   const [environmentReady, setEnvironmentReady] = useState(false)
   const [environmentVisible, setEnvironmentVisible] = useState(true)
 
@@ -177,6 +178,55 @@ function App() {
     })
     window.history.replaceState(null, '', `#${id}`)
   }
+
+  const projectCategories = ['All', ...Array.from(new Set(projects.map((project) => project.category))), 'n8n Automation']
+  const filteredProjects = activeProjectCategory === 'All'
+    ? projects
+    : activeProjectCategory === 'n8n Automation'
+      ? []
+      : projects.filter((project) => project.category === activeProjectCategory)
+
+  const n8nProjects = [
+    {
+      number: '01',
+      title: 'Social Media Automation (FNF)',
+      description: 'An automated AI-powered LinkedIn content publishing workflow.',
+      features: [
+        'Triggers when a news article link is added to Google Sheets.',
+        'Uses Gemini to summarize the article and generate a LinkedIn post.',
+        'Generates an AI image prompt and creates an image using Hugging Face.',
+        'Automatically publishes the post with its generated image to LinkedIn.',
+      ],
+      tech: ['n8n', 'Gemini', 'Google Sheets', 'Hugging Face', 'LinkedIn'],
+      nodes: ['Sheets', 'Gemini', 'AI Image', 'LinkedIn'],
+    },
+    {
+      number: '02',
+      title: 'Automated LinkedIn Job Tracker',
+      description: 'An AI-powered workflow that discovers job opportunities and prepares personalized applications.',
+      features: [
+        'Runs on a schedule and collects LinkedIn-related job listings from an RSS feed.',
+        'Uses Gemini to extract technical skills from each job description.',
+        'Generates a personalized, role-specific cover letter for each listing.',
+        'Saves job details, required skills, job links, and cover letters in Google Sheets.',
+      ],
+      tech: ['n8n', 'RSS', 'Gemini', 'Google Sheets', 'LinkedIn'],
+      nodes: ['Schedule', 'RSS', 'Gemini', 'Sheets'],
+    },
+    {
+      number: '03',
+      title: 'Learning Journey Showcase',
+      description: 'An automated workflow that transforms learning progress into professional LinkedIn content.',
+      features: [
+        'Detects new learning entries submitted through Google Sheets.',
+        'Converts each entry into a concise, audience-focused summary.',
+        'Generates a detailed and professional LinkedIn post.',
+        'Automatically publishes the post on LinkedIn.',
+      ],
+      tech: ['n8n', 'Google Sheets', 'Gemini', 'LinkedIn'],
+      nodes: ['Sheets', 'Summarize', 'Gemini', 'LinkedIn'],
+    },
+  ]
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -379,8 +429,60 @@ function App() {
                 <p>A selection of projects, experiments, and digital experiences built through code and creative problem-solving.</p>
               </div>
             </div>
-            <div className="project-gallery">
-              {projects.map((project, projectIndex) => (
+            <div className="project-filters reveal cinematic-reveal" role="group" aria-label="Filter projects by category">
+              {projectCategories.map((category) => (
+                <button
+                  type="button"
+                  key={category}
+                  className={activeProjectCategory === category ? 'active' : ''}
+                  onClick={() => {
+                    setActiveProjectCategory(category)
+                    setActiveProject(0)
+                  }}
+                  aria-pressed={activeProjectCategory === category}
+                >
+                  {category === 'NLP' ? 'NLP Project' : category}
+                </button>
+              ))}
+            </div>
+            <div className={activeProjectCategory === 'n8n Automation' ? 'project-gallery automation-gallery' : 'project-gallery'}>
+              {activeProjectCategory === 'n8n Automation' ? n8nProjects.map((project, projectIndex) => (
+                <motion.article
+                  className={`automation-showcase automation-${projectIndex + 1}`}
+                  key={project.title}
+                  initial={{ opacity: 0, y: 34 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.12 }}
+                  transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="automation-index" aria-hidden="true">WF-{project.number}</div>
+                  <div className="automation-copy">
+                    <div className="automation-kicker"><i /> n8n workflow</div>
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                    <div className="automation-features">
+                      {project.features.map((feature) => <span key={feature}>{feature}</span>)}
+                    </div>
+                    <div className="story-tech">
+                      {project.tech.map((tech) => <span key={tech}>{tech}</span>)}
+                    </div>
+                  </div>
+                  <div className="automation-visual" aria-label={`${project.title} workflow diagram`}>
+                    <div className="workflow-grid" />
+                    <div className="workflow-nodes">
+                      {project.nodes.map((node, nodeIndex) => (
+                        <div className="workflow-node-wrap" key={node}>
+                          {nodeIndex > 0 && <span className="workflow-connector" aria-hidden="true"><i /></span>}
+                          <div className="workflow-node">
+                            <span>{String(nodeIndex + 1).padStart(2, '0')}</span>
+                            <strong>{node}</strong>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.article>
+              )) : filteredProjects.map((project, projectIndex) => (
                 <motion.article
                   className={`project-study project-${projectIndex + 1}${activeProject === projectIndex ? ' active' : ''}`}
                   key={project.title}
@@ -400,8 +502,33 @@ function App() {
                       <h3>{project.title}</h3>
                       <p className="story-subtitle">{project.subtitle}</p>
                       <p className="story-description">{project.description}</p>
+                      {project.category === 'NLP' && (
+                        <div className="nlp-project-preview" aria-label="OCR and multilingual spell checking preview">
+                          <div className="ocr-preview-source">
+                            <div className="ocr-preview-heading">
+                              <span>Document preview</span>
+                              <i>TXT</i>
+                            </div>
+                            <div className="ocr-preview-lines" aria-hidden="true">
+                              <p>తెలుగు వచనం</p>
+                              <p>English text extraction</p>
+                            </div>
+                            <div className="ocr-preview-status">
+                              <span>OCR complete</span>
+                              <span>Spell check ready</span>
+                            </div>
+                          </div>
+                          <div className="ocr-preview-flow" aria-hidden="true">
+                            <span>OCR</span>
+                            <i />
+                            <span>NLP</span>
+                            <i />
+                            <span>DOCX</span>
+                          </div>
+                        </div>
+                      )}
                       <div className="story-features">
-                        {project.features.slice(0, 3).map((feature) => <span key={feature}>{feature}</span>)}
+                        {(project.category === 'NLP' ? project.features : project.features.slice(0, 3)).map((feature) => <span key={feature}>{feature}</span>)}
                       </div>
                       <div className="story-tech">
                         {project.tech.map((tech) => <span key={tech}>{tech}</span>)}

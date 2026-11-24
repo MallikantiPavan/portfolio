@@ -77,6 +77,21 @@ export const projects = [
     features: ['Voice-based responses', 'Topic-driven interviews', 'Automated scoring', 'Improvement suggestions'],
     githubUrl: 'https://github.com/MallikantiPavan/Interview_Assistent',
   },
+  {
+    number: '04',
+    title: 'OCR & Multilingual Spell Checker',
+    subtitle: 'Multilingual OCR and text correction',
+    category: 'NLP',
+    description: 'A multilingual OCR application that extracts text from images, checks spelling, generates documents, and reports text statistics.',
+    tech: ['Python', 'NLP', 'OCR', 'Tesseract', 'FastAPI', 'REST APIs', 'Streamlit', 'Corpus Processing', 'DOCX Generation'],
+    features: [
+      'English and Telugu text extraction from images using Tesseract OCR and Python.',
+      'Multilingual spell checking using Levenshtein, Jaro, LCS, and Hamming distance.',
+      'FastAPI backend for image uploads, OCR, spell checking, document generation, and text statistics.',
+      'Streamlit interface with downloadable DOCX reports.',
+    ],
+    githubUrl: 'https://github.com/MallikantiPavan/Telugu-ocr-and-spell-checker',
+  },
 ]
 
 export const education = [
